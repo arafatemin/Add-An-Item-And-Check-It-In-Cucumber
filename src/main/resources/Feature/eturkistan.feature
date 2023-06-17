@@ -14,3 +14,4 @@ Feature: eturkistan feature
       | itemNum | columnNum | subject              | content                      |
       |       2 |         2 | selenium added topic | this is selenium added topic |
       |       1 |         3 | selenium             | this is selenium             |
+
