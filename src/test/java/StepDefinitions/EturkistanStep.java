@@ -7,13 +7,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class EturkistanStep {
     WebDriver driver;
-    String i = null;
-    String j = null;
 
 
     @Given("I launch SDBO")
@@ -43,9 +43,7 @@ public class EturkistanStep {
 
     @And("I click {string} item on {string} column")
     public void i_click_item_on_column(String string, String string2) {
-        i = string;
-        j = string2;
-        driver.findElement(By.cssSelector("div:nth-of-type(" + string + ") > .cdk-drop-list > div:nth-of-type(" + string2 + ") > span")).click();
+        driver.findElement(By.cssSelector("div:nth-of-type("+string+") > .cdk-drop-list > div:nth-of-type("+string2+") > span")).click();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
@@ -64,13 +62,13 @@ public class EturkistanStep {
     public void i_enter_on_name_and_enter_to_body_for_add_topic(String string, String string2) {
         driver.findElement(By.cssSelector("input[name='fname']")).sendKeys(string);
         driver.findElement(By.cssSelector("div[role='textbox'] > p")).sendKeys(string2);
-        driver.findElement(By.cssSelector(".rightTDText > div > div > button:nth-of-type(1)")).click();
+        driver.findElement(By.cssSelector(".rightTDText > div > div > button:nth-of-type(1)")).click();// save button
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
     @And("I close popup for add topic")
     public void i_close_popup_for_add_topic() {
-        driver.findElement(By.cssSelector("div#closeButtonDiv")).click();
+        driver.findElement(By.cssSelector("div#closeButtonDiv")).click(); // click the close button of popup
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
@@ -82,27 +80,33 @@ public class EturkistanStep {
 
 
 
+
+
+
     @Then("I verify added an item with subject {string} and content {string}")
-    public void i_verify_added_an_item_with_subject_and_content(String string, String string2) throws InterruptedException {
+    public void i_verify_added_an_item_with_subject_and_content(String string, String string2)  throws InterruptedException {
         List<WebElement> allDates = driver.findElements(By.xpath("//div[@id='leftSide']/table[@class='cdk-drop-list']/tbody/tr"));
         int allDatesMines = allDates.size()-1;
         Thread.sleep(2000);
 
-        WebElement clickBtn = driver.findElement(By.cssSelector("div:nth-of-type(" + i + ") > .cdk-drop-list > div:nth-of-type(" + j + ") > span"));
-        clickBtn.click();
         WebElement title = driver.findElement(By.cssSelector("tr:nth-of-type("+allDatesMines+") .rightTD > .pointer.rightTDTitleAddTopic > span"));
         if (title.getText().equals(string)){
-            System.out.println("Title: " + title.getText());
+            System.out.println("Title: " + title.getText()); // title content
         }
+        Assert.assertEquals(title.getText(), string, "Test Failed");
         Thread.sleep(2000);
 
         WebElement description = driver.findElement(By.cssSelector("tr:nth-of-type("+allDatesMines+") .pointer.sdboLinkDivNameTopic  p"));
         if (description.getText().equals(string2)){
-            System.out.println("Description: " + description.getText());
+            System.out.println("Description: " + description.getText()); // description content
         }
+        Assert.assertEquals(description.getText(), string2, "Test Failed");
+        System.out.println();
+
         driver.findElement(By.cssSelector("div#closeButtonDiv")).click();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.close();
+        driver.quit();
     }
 
 
